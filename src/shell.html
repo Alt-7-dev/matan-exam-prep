@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Матанализ: 30 дней до экзамена</title>
+<title>Матанализ: подготовка к экзамену 13 января</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
@@ -53,10 +53,12 @@ details div{margin-top:6px;color:var(--mute)}
 .tile b{display:block;font:600 28px/1.1 "Golos Text"}.tile span{font-size:13px;color:var(--mute)}
 .grid{display:flex;flex-wrap:wrap;gap:5px}
 .cell{width:46px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:500;text-decoration:none;color:#fff}
-.cal{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .cd{aspect-ratio:1;border-radius:8px;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px}
 .cd.done{background:var(--s3);color:#fff;border-color:var(--s3)}.cd.today{outline:2px solid var(--acc)}
 .cd.part{background:var(--s2);color:#fff;border-color:var(--s2)}
+.cd.off{background:var(--line);color:var(--mute)}.cd.exam{background:var(--acc);color:#fff;border-color:var(--acc)}
+.bk{display:inline-block;width:9px;height:11px;border:1.5px solid currentColor;border-radius:1px 3px 3px 1px;margin-right:6px;vertical-align:-1px}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mute);margin-top:10px}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .timer{font:600 34px/1 "Golos Text";font-variant-numeric:tabular-nums}
@@ -78,7 +80,7 @@ input[type=date]{font:15px "Golos Text";padding:7px 10px;border-radius:8px;borde
 .expl b{color:var(--ink)}.expl .h{font:600 12.5px "Golos Text";text-transform:uppercase;letter-spacing:.05em;color:var(--acc);margin-bottom:4px}
 .score{font:600 44px/1 "Golos Text";margin:6px 0}
 .toggle{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;user-select:none}
-@media (max-width:560px){.cal{grid-template-columns:repeat(6,1fr)}.ti .nm{font-size:13.5px}}
+@media (max-width:560px){.cd span{display:none}.ti .nm{font-size:13.5px}}
 </style>
 </head>
 <body>
@@ -105,9 +107,11 @@ const iso=d=>{const x=new Date(d);return x.getFullYear()+"-"+String(x.getMonth()
 const addD=(s,n)=>{const d=new Date(s+"T00:00:00");d.setDate(d.getDate()+n);return iso(d)};
 const diffD=(a,b)=>Math.round((new Date(b+"T00:00:00")-new Date(a+"T00:00:00"))/864e5);
 const TODAY=()=>iso(new Date());
-let S={v:1,start:TODAY(),t:{},log:{},upd:0};
+let S={v:1,start:"2026-11-24",planV:2,t:{},log:{},upd:0};
 let mode={hide:false,tab:'theory'};let QZ=null;
 try{const ls=localStorage.getItem("matan-progress");if(ls)S=Object.assign(S,JSON.parse(ls))}catch(e){}
+const NDAYS=PLAN.length;
+function migrate(){if(S.planV!==2){S.start=PLAN_START;S.planV=2}}migrate();
 let dbRef=null,saving=false,pending=false,saveTimer=null,syncNote="";
 function persist(){S.upd=Date.now();try{localStorage.setItem("matan-progress",JSON.stringify(S))}catch(e){}
  clearTimeout(saveTimer);saveTimer=setTimeout(flush,700)}
@@ -116,7 +120,7 @@ async function flush(){if(!dbRef)return;if(saving){pending=true;return}saving=tr
  saving=false;if(pending){pending=false;flush()}}
 (async()=>{try{if(!window.claude||!claude.use)return;const db=await claude.use("db");const user=await claude.use("user");if(!db||!user)return;
  const uid=await user.id();if(!uid)return;dbRef=db.doc("data/users/"+uid+"/progress");
- const snap=await dbRef.get();if(snap.exists){const d=snap.data();if(d&&(d.upd||0)>(S.upd||0)){S=Object.assign({v:1,t:{},log:{}},JSON.parse(JSON.stringify(d)));try{localStorage.setItem("matan-progress",JSON.stringify(S))}catch(e){}render()}else if((S.upd||0)>(d.upd||0))flush()}else if(S.upd)flush();
+ const snap=await dbRef.get();if(snap.exists){const d=snap.data();if(d&&(d.upd||0)>(S.upd||0)){S=Object.assign({v:1,t:{},log:{}},JSON.parse(JSON.stringify(d)));migrate();try{localStorage.setItem("matan-progress",JSON.stringify(S))}catch(e){}render()}else if((S.upd||0)>(d.upd||0))flush()}else if(S.upd)flush();
  syncNote="Прогресс синхронизируется между устройствами";render()}catch(e){}})();
 
 const st=id=>S.t[id]||{l:0};
@@ -137,7 +141,7 @@ const VERD=["Нужно перечитать теорию","Почти, но е�
 function quizView(){const z=QZ,x=BYID[z.id];
  const prog=`<div class="qprog">${z.qs.map((_,k)=>`<i class="${z.res[k]===true?"ok":z.res[k]===false?"bad":k===z.i&&!z.done?"cur":""}"></i>`).join("")}</div>`;
  if(z.done){const wrong=z.qs.map((q,k)=>[q,k]).filter(([q,k])=>!z.res[k]);
-  const di=dayIdx(),d=PLAN[Math.min(di,29)];const nx=Array.isArray(d)?d.find(i=>lvl(i)===0):null;
+  const di=dayIdx(),d=PLAN[Math.min(di,NDAYS-1)];const nx=Array.isArray(d)?d.find(i=>lvl(i)===0):null;
   return `${prog}<p class="note" style="margin:0">Результат теста</p><div class="score">${z.ok} / ${z.qs.length}</div>
   <p class="row" style="margin:0 0 10px"><span class="dot" style="background:${LV[z.r+1].c}"></span><b>${VERD[z.r]}</b>&nbsp;<span class="note">· статус: ${LV[z.r+1].n}, повторить ${fmt(st(z.id).d)}</span></p>
   ${wrong.length?`<h3>Ошибки — перечитай</h3>${wrong.map(([q])=>`<details open><summary>${q.q}</summary><div>Верно: <b style="color:var(--ink)">${q.opts.find(o=>o.c).o}</b></div>${q.ex?`<div class="expl">${q.ex}</div>`:""}</details>`).join("")}`:""}
@@ -149,28 +153,32 @@ function quizView(){const z=QZ,x=BYID[z.id];
  ${q.opts.map((o,k)=>{let c="";if(answered){if(o.c)c="ok";else if(k===z.pick)c="bad"}return `<button class="opt ${c}" ${answered?"disabled":""} onclick="qPick(${k})"><span class="k">${k+1}</span><span>${o.o}</span></button>`}).join("")}
  ${answered?`<p class="verdict ${z.res[z.i]?"ok":"bad"}">${z.res[z.i]?"Верно":"Неверно. Правильный ответ подсвечен зелёным"}</p>${q.ex?`<div class="expl"><div class="h">Разбор — повтори</div>${q.ex}</div>`:""}<button class="btn pri" onclick="qNext()">${z.i+1<z.qs.length?"Дальше →":"Результат"}</button> <span class="note">или Enter</span>`:`<p class="note">Выбери ответ мышкой или клавишами 1–4</p>`}`}
 function counts(){const c=[0,0,0,0,0];T.forEach(x=>c[lvl(x.id)]++);return c}
-function revList(d){if(d.rev==="weak"){const w=weak();return w.length?w:T.filter(x=>lvl(x.id)<3)}
- if(d.rev==="exam")return [];const di=PLAN.indexOf(d);return T.filter(x=>d.rev.includes(x.s)&&DAYOF[x.id]<di)}
-function dayDone(i){const d=PLAN[i];const date=addD(S.start,i);
+function revList(d){if(d.ids)return d.ids.map(i=>BYID[i]);if(d.rev==="weak"){const w=weak();return w.length?w:T.filter(x=>lvl(x.id)<3)}
+ if(d.rev==="exam"||d.off)return [];const di=PLAN.indexOf(d);return T.filter(x=>d.rev.includes(x.s)&&DAYOF[x.id]<di)}
+const daysLeft=()=>diffD(TODAY(),EXAM_DATE);
+const WD=["вс","пн","вт","ср","чт","пт","сб"];
+function dlabel(i){const d=new Date(addD(S.start,i)+"T00:00:00");return WD[d.getDay()]+", "+d.getDate()+" "+["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"][d.getMonth()]}
+function dayDone(i){const d=PLAN[i];const date=addD(S.start,i);if(d.off)return 3;
  if(Array.isArray(d)){const r=d.filter(id=>lvl(id)>0).length;return r===d.length?2:r?1:0}
  return S.log[date]?2:0}
 
 function header(){const c=counts();const k=c[3]+c[4];
  document.getElementById("hcount").textContent=k+" из "+T.length;
  document.getElementById("hbar").innerHTML=[4,3,2,1].map(l=>`<span style="width:${c[l]/T.length*100}%;background:${LV[l].c}"></span>`).join("");
- const di=dayIdx();document.getElementById("hsub").textContent=di<30?`День ${di+1} из 30 · ${PLAN[di]&&!Array.isArray(PLAN[di])?PLAN[di].label:"новые билеты"}`:"План пройден — режим повторения"}
+ const di=dayIdx(),dl=daysLeft();document.getElementById("hsub").textContent=(dl>0?`До экзамена ${dl} ${dl%10==1&&dl%100!=11?"день":dl%10>=2&&dl%10<=4&&(dl%100<10||dl%100>=20)?"дня":"дней"} · `:dl===0?"Экзамен сегодня · ":"")+(di<NDAYS?`День ${di+1} из ${NDAYS}: ${Array.isArray(PLAN[di])?"новые билеты":PLAN[di].label}`:"План пройден — режим повторения")}
 function tItem(x,extra){return `<a class="ti" href="#t-${x.id.replace(".","-")}"><span class="dot" style="background:${LV[lvl(x.id)].c}"></span><span class="id">${x.id}</span><span class="nm">${x.t}</span>${extra||""}</a>`}
 
-function vToday(){const di=dayIdx();const d=PLAN[Math.min(di,29)];let h="";
- if(di>=30){h+=`<div class="card"><h2>Месяц позади</h2><p class="note">План на 30 дней закончился. Дальше — повторение слабых билетов и пробные экзамены во вкладке «Тренировка».</p></div>`}
+function vToday(){const di=dayIdx();const d=PLAN[Math.min(di,NDAYS-1)];let h="";
+ if(di>=NDAYS){h+=`<div class="card"><h2>План пройден</h2><p class="note">Все дни плана позади. Повторяй слабые билеты и тренируйся на пробных экзаменах во вкладке «Тренировка». Удачи на экзамене!</p></div>`}
+ else if(d.off){h+=`<div class="card"><h2>${dlabel(di)} · день ${di+1}</h2><p style="margin:0">${d.label}.</p><p class="note">Сегодня матаналом можно не заниматься. Если есть 10 минут — загляни в «Повторить сегодня» ниже.</p></div>`}
  else if(Array.isArray(d)){const items=d.map(id=>BYID[id]);const done=items.filter(x=>lvl(x.id)>0).length;
-  h+=`<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">День ${di+1}: новые билеты</h2><span class="chip">${done} / ${items.length}</span></div>
+  h+=`<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">${dlabel(di)} · новые билеты</h2><span class="chip">${done} / ${items.length} · ~1 ч</span></div>
   <p class="note">Прочитай теорию билета, расскажи вслух и пройди тест: проверка автоматическая, оценка выставится сама.</p><div class="tl">${items.map(x=>tItem(x)).join("")}</div></div>`}
- else{const list=revList(d);h+=`<div class="card"><h2>День ${di+1}: ${d.label}</h2>`;
+ else{const list=revList(d);h+=`<div class="card"><div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:6px"><h2 style="margin:0">${dlabel(di)} · ${d.label}</h2>${d.h?`<span class="chip">~${d.h}</span>`:""}</div><div style="height:10px"></div>`;
   if(d.rev==="exam")h+=`<p class="note">Сегодня проверка в условиях экзамена: случайный билет, 5 минут на подготовку, ответ вслух.</p><a class="btn pri" href="#train" onclick="setTimeout(()=>startSession('exam'),0)">Начать пробный экзамен</a>`;
   else h+=`<p class="note">Пройди тесты по всем билетам из списка — оценки обновятся автоматически.</p><div class="row" style="margin-bottom:12px"><button class="btn pri" onclick="startSession('list',[${list.map(x=>`'${x.id}'`).join(",")}])">Пройти тесты подряд (${list.length})</button></div><div class="tl">${list.map(x=>tItem(x)).join("")}</div>`;
   h+=`</div>`}
- const back=T.filter(x=>lvl(x.id)===0&&DAYOF[x.id]<Math.min(di,30));
+ const back=T.filter(x=>lvl(x.id)===0&&DAYOF[x.id]<Math.min(di,NDAYS));
  if(back.length)h+=`<div class="card"><h2>Долги с прошлых дней</h2><div class="tl">${back.map(x=>tItem(x)).join("")}</div></div>`;
  const du=due();h+=`<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Повторить сегодня</h2><span class="chip">${du.length}</span></div>`;
  h+=du.length?`<p class="note">Эти билеты пора повторить, чтобы они не забылись.</p><div class="row" style="margin-bottom:12px"><button class="btn pri" onclick="startSession('due')">Начать повторение</button></div><div class="tl">${du.map(x=>tItem(x)).join("")}</div>`:`<p class="note" style="margin:8px 0 0">На сегодня повторять нечего. Билеты появятся здесь через 1–7 дней после оценки.</p>`;
@@ -186,7 +194,7 @@ function ticketBody(x,hide){const cls=hide?"hidden-ans":"";return `
 function vTicket(id){const x=BYID[id];if(!x)return vToday();const s=st(id);const prev=T[x.i-1],next=T[x.i+1];
  return `<div class="card"><div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><span class="chip">Билет ${x.id} · ${SECTIONS[x.s]}</span>
  <span class="row note"><span class="dot" style="background:${LV[s.l||0].c}"></span>${LV[s.l||0].n}${s.d?` · повторить ${fmt(s.d)}`:""}</span></div>
- <h2 style="margin-top:12px;font-size:20px">${x.t}</h2>
+ <h2 style="margin-top:12px;font-size:20px">${x.t}</h2>${x.ref?`<p class="note" style="margin:-4px 0 0"><i class="bk"></i>Письменный, «Конспект лекций по высшей математике»: ${x.ref}</p>`:""}
  <div class="tabs"><button class="${mode.tab==="theory"?"on":""}" onclick="mode.tab='theory';render()">Теория</button><button class="${mode.tab==="quiz"?"on":""}" onclick="openQuiz('${x.id}')">Тест${s.sc?` · ${s.sc[0]}/${s.sc[1]}`:""}</button></div>
  ${mode.tab==="quiz"&&QZ&&QZ.id===x.id?quizView():`<label class="toggle" style="margin-top:10px"><input type="checkbox" ${mode.hide?"checked":""} onchange="mode.hide=this.checked;render()"> Скрыть ответ: расскажи вслух по плану, потом открой</label>
  ${ticketBody(x,mode.hide)}<div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)" class="row"><button class="btn pri" onclick="openQuiz('${x.id}')">Пройти тест по билету (${(Q[x.id]||[]).length} вопр.)</button><span class="note">Оценка выставится автоматически</span></div>`}</div>
@@ -226,20 +234,23 @@ function vProgress(){const c=counts();const di=dayIdx();
  <div class="legend">${LV.map(l=>`<span><i style="background:${l.c}"></i>${l.n}</span>`).join("")}</div></div>`;
  h+=`<div class="card"><h2>По разделам</h2>${Object.keys(SECTIONS).map(s=>{const xs=T.filter(x=>x.s==s);const k=xs.filter(x=>lvl(x.id)>=3).length;const w=xs.filter(x=>lvl(x.id)>0&&lvl(x.id)<3).length;
   return `<div class="sec"><div class="row"><span>${s}. ${SECTIONS[s]}</span><span class="note">${k} / ${xs.length}</span></div><div class="bar"><span style="width:${k/xs.length*100}%;background:var(--s3)"></span><span style="width:${w/xs.length*100}%;background:var(--s2)"></span></div></div>`}).join("")}</div>`;
- h+=`<div class="card"><h2>Календарь на 30 дней</h2><div class="cal">${PLAN.map((d,i)=>{const dd=dayDone(i);const date=addD(S.start,i);
-  return `<div class="cd ${dd==2?"done":dd==1?"part":""} ${i===di?"today":""}" title="${Array.isArray(d)?d.join(", "):d.label}"><b>${i+1}</b><span style="font-size:10.5px;opacity:.8">${fmt(date)}</span></div>`}).join("")}</div>
-  <div class="legend"><span><i style="background:var(--s3)"></i>день выполнен</span><span><i style="background:var(--s2)"></i>частично</span><span><i style="border:2px solid var(--acc)"></i>сегодня</span></div></div>`;
- h+=`<div class="card"><h2>Настройки</h2><div class="row" style="flex-wrap:wrap"><span>Первый день плана:</span><input type="date" value="${S.start}" onchange="if(this.value){S.start=this.value;persist();render()}"></div>
+ const pad=(new Date(S.start+"T00:00:00").getDay()+6)%7;
+ h+=`<div class="card"><h2>Расписание до экзамена 13 января</h2><div class="cal">${["пн","вт","ср","чт","пт","сб","вс"].map(w=>`<div class="note" style="text-align:center;font-size:12px">${w}</div>`).join("")}${"<div></div>".repeat(pad)}${PLAN.map((d,i)=>{const dd=dayDone(i);const date=addD(S.start,i);
+  const tag=Array.isArray(d)?d.length+" нов.":d.off?"отдых":d.rev==="exam"?"экзамен":d.rev==="weak"?"слабые":d.label.startsWith("Круг")?d.label.slice(0,6):"повтор";
+  return `<div class="cd ${dd==3?"off":dd==2?"done":dd==1?"part":""} ${i===di?"today":""}" title="${dlabel(i)}: ${Array.isArray(d)?"билеты "+d.join(", "):d.label}"><b>${fmt(date)}</b><span style="font-size:10px;opacity:.85">${tag}</span></div>`}).join("")}<div class="cd exam" title="Экзамен"><b>13.01</b><span style="font-size:10px">ЭКЗАМЕН</span></div></div>
+  <div class="legend"><span><i style="background:var(--s3)"></i>выполнено</span><span><i style="background:var(--s2)"></i>частично</span><span><i style="background:var(--line)"></i>отдых от матана</span><span><i style="border:2px solid var(--acc)"></i>сегодня</span></div></div>`;
+ h+=`<div class="card"><h2>Весь план по дням</h2>${PLAN.map((d,i)=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line);font-size:14px;${i===di?"font-weight:600":""}"><span style="min-width:96px;color:var(--mute)">${dlabel(i)}</span><span style="flex:1">${Array.isArray(d)?"Новые билеты: "+d.join(", "):d.label+(d.ids?" ("+d.ids[0]+"–"+d.ids[d.ids.length-1]+")":"")}</span>${d.h?`<span class="note">${d.h}</span>`:Array.isArray(d)?`<span class="note">~1 ч</span>`:""}</div>`).join("")}</div>`;
+ h+=`<div class="card"><h2>Настройки</h2><div class="row" style="flex-wrap:wrap"><span>Первый день плана:</span><input type="date" value="${S.start}" onchange="if(this.value){S.start=this.value;persist();render()}"><span class="note">по умолчанию 24 ноября, экзамен 13 января</span></div>
  <p class="note">${syncNote||"Прогресс хранится в этом браузере."}</p>
  <div id="rst"><button class="btn" onclick="document.getElementById('rst').innerHTML='<span>Стереть весь прогресс?</span> <button class=&quot;btn&quot; onclick=&quot;resetAll()&quot;>Да, стереть</button> <button class=&quot;btn&quot; onclick=&quot;render()&quot;>Отмена</button>'">Сбросить прогресс</button></div></div>`;
  return h}
-function resetAll(){S={v:1,start:TODAY(),t:{},log:{},upd:0};persist();render()}
+function resetAll(){S={v:1,start:PLAN_START,planV:2,t:{},log:{},upd:0};persist();render()}
 
 function rateBar_unused(id){const el=document.getElementById("rate");if(!id){el.style.display="none";return}
  el.style.display="block";const opts=[["Не помню",1],["С трудом",2],["Помню",3],["Отлично",4]];
  el.innerHTML=`<div class="in"><span class="lbl">Как ответил${SES&&SES.i<SES.q.length?"":"?"}</span>${opts.map((o,r)=>`<button class="rb" style="border-color:${LV[o[1]].c}" onclick="doRate('${id}',${r})"><span class="dot" style="display:inline-block;background:${LV[o[1]].c};margin-right:6px;vertical-align:-1px"></span>${o[0]}<span class="note"> · ${r+1}</span></button>`).join("")}</div>`}
 function doRate(id,r){rate(id,r);if(SES&&SES.i<SES.q.length&&SES.q[SES.i]===id){SES.res[r]++;SES.i++;SES.shown=false;SES.t0=Date.now()}
- else{const x=BYID[id];const di=dayIdx();const d=PLAN[Math.min(di,29)];let nx=null;
+ else{const x=BYID[id];const di=dayIdx();const d=PLAN[Math.min(di,NDAYS-1)];let nx=null;
   if(Array.isArray(d)){const rest=d.filter(i=>lvl(i)===0);if(rest.length)nx=rest[0]}
   mode.hide=false;if(nx){location.hash="t-"+nx.replace(".","-");return}}
  render();window.scrollTo(0,0)}
