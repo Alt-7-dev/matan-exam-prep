@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Матанализ: 30 дней до экзамена</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f2ec;--card:#fffdf9;--ink:#1e1c19;--mute:#6f6a61;--line:#e4ded3;--acc:#2f4bc0;--acc-bg:#e9ecfb;
+--s0:#d9d4ca;--s1:#d65a4a;--s2:#e3a42b;--s3:#4fa874;--s4:#1f7a50;--radius:14px}
+@media (prefers-color-scheme:dark){:root{--bg:#161513;--card:#201f1c;--ink:#efebe3;--mute:#a39e94;--line:#34322d;--acc:#8ea0f5;--acc-bg:#262c4a;--s0:#3a3833}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Golos Text",system-ui,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px 110px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}
+h1{font:600 22px/1.2 "Golos Text";margin:0}
+.sub{color:var(--mute);font-size:14px}
+.bar{height:8px;border-radius:8px;background:var(--line);overflow:hidden;display:flex}
+.bar span{display:block;height:100%}
+nav{display:flex;gap:6px;margin:14px 0 20px;flex-wrap:wrap}
+nav a{padding:8px 14px;border-radius:999px;text-decoration:none;color:var(--ink);border:1px solid var(--line);font-size:15px;background:var(--card)}
+nav a.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:14px}
+h2{font:600 18px/1.3 "Golos Text";margin:0 0 10px}
+h3{font:600 15px/1.3 "Golos Text";margin:18px 0 8px;color:var(--mute);text-transform:uppercase;letter-spacing:.04em}
+.row{display:flex;align-items:center;gap:10px}
+.tl{display:flex;flex-direction:column;gap:6px}
+.ti{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--ink);border:1px solid var(--line)}
+.ti:hover{border-color:var(--acc)}
+.ti .id{font-weight:600;min-width:40px}
+.ti .nm{flex:1;font-size:14.5px}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.chip{font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--acc-bg);color:var(--acc);white-space:nowrap}
+.btn{font:500 15px "Golos Text";padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--acc)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.theory{font:17px/1.65 "PT Serif",Georgia,serif}
+.theory p{margin:0 0 10px}.theory ul{margin:0 0 10px;padding-left:22px}
+.theory table{border-collapse:collapse;font:14px/1.4 "Golos Text";width:100%;margin:6px 0}
+.theory td,.theory th{border:1px solid var(--line);padding:5px 7px;text-align:left}
+.plan{margin:0;padding-left:22px}.plan li{margin:3px 0}
+.proof{border-left:3px solid var(--acc);padding:4px 0 4px 14px;margin:8px 0}
+details{border-top:1px solid var(--line);padding:10px 0}details summary{cursor:pointer;font-weight:500}
+details div{margin-top:6px;color:var(--mute)}
+.hidden-ans{filter:blur(7px);user-select:none;pointer-events:none}
+.rate{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 12px}
+.rate .in{max-width:860px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rate .lbl{font-size:13px;color:var(--mute);margin-right:4px}
+.rb{flex:1;min-width:110px;padding:10px;border-radius:10px;border:1.5px solid;font:500 14px "Golos Text";cursor:pointer;background:transparent;color:var(--ink)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+.tile b{display:block;font:600 28px/1.1 "Golos Text"}.tile span{font-size:13px;color:var(--mute)}
+.grid{display:flex;flex-wrap:wrap;gap:5px}
+.cell{width:46px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:500;text-decoration:none;color:#fff}
+.cal{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+.cd{aspect-ratio:1;border-radius:8px;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px}
+.cd.done{background:var(--s3);color:#fff;border-color:var(--s3)}.cd.today{outline:2px solid var(--acc)}
+.cd.part{background:var(--s2);color:#fff;border-color:var(--s2)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mute);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.timer{font:600 34px/1 "Golos Text";font-variant-numeric:tabular-nums}
+.note{font-size:13.5px;color:var(--mute)}
+.sec{margin-bottom:10px}.sec .row{justify-content:space-between;font-size:14px;margin-bottom:4px}
+input[type=date]{font:15px "Golos Text";padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.tabs{display:flex;gap:4px;background:var(--bg);padding:4px;border-radius:12px;margin:14px 0 4px;width:max-content}
+.tabs button{font:500 15px "Golos Text";border:0;background:transparent;color:var(--mute);padding:8px 18px;border-radius:9px;cursor:pointer}
+.tabs button.on{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.qprog{display:flex;gap:4px;margin:6px 0 16px}.qprog i{flex:1;height:5px;border-radius:4px;background:var(--line)}
+.qprog i.ok{background:var(--s3)}.qprog i.bad{background:var(--s1)}.qprog i.cur{background:var(--acc)}
+.qq{font:500 18px/1.45 "Golos Text";margin:0 0 14px}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;font:16px/1.45 "PT Serif",serif;padding:12px 14px;margin-bottom:8px;border-radius:11px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.opt:hover:not([disabled]){border-color:var(--acc)}.opt[disabled]{cursor:default}
+.opt .k{font:600 13px "Golos Text";color:var(--mute);border:1px solid var(--line);border-radius:6px;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex:none}
+.opt.ok{border-color:var(--s3);background:color-mix(in srgb,var(--s3) 12%,var(--card))}.opt.bad{border-color:var(--s1);background:color-mix(in srgb,var(--s1) 12%,var(--card))}
+.verdict{font-weight:600;margin:6px 0}.verdict.ok{color:var(--s4)}.verdict.bad{color:var(--s1)}
+.expl{border-left:3px solid var(--acc);background:var(--acc-bg);border-radius:0 10px 10px 0;padding:10px 14px;margin:10px 0 14px;font:16px/1.6 "PT Serif",serif;color:var(--ink)}
+.expl b{color:var(--ink)}.expl .h{font:600 12.5px "Golos Text";text-transform:uppercase;letter-spacing:.05em;color:var(--acc);margin-bottom:4px}
+.score{font:600 44px/1 "Golos Text";margin:6px 0}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;user-select:none}
+@media (max-width:560px){.cal{grid-template-columns:repeat(6,1fr)}.ti .nm{font-size:13.5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <div><h1>Матанализ · подготовка к экзамену</h1><div class="sub" id="hsub"></div></div>
+ <div style="min-width:220px;flex:1;max-width:320px"><div class="row" style="justify-content:space-between;font-size:13px;color:var(--mute);margin-bottom:5px"><span>Выучено</span><span id="hcount"></span></div><div class="bar" id="hbar"></div></div>
+</header>
+<nav id="nav"><a href="#today">Сегодня</a><a href="#tickets">Все билеты</a><a href="#train">Тренировка</a><a href="#progress">Прогресс</a></nav>
+<main id="app"></main>
+</div>
+
+<script>
+/*CONTENT*/
+/*QUIZ*/
+/*EXPL*/
+</script>
+<script>
+const LV=[{n:"Не начат",c:"var(--s0)"},{n:"Не помню",c:"var(--s1)"},{n:"С трудом",c:"var(--s2)"},{n:"Помню",c:"var(--s3)"},{n:"Отлично",c:"var(--s4)"}];
+const BYID={};T.forEach((x,i)=>{x.s=+x.id.split(".")[0];x.i=i;BYID[x.id]=x});
+const DAYOF={};PLAN.forEach((d,i)=>{if(Array.isArray(d))d.forEach(id=>DAYOF[id]=i)});
+const day0=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x};
+const iso=d=>{const x=new Date(d);return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0")};
+const addD=(s,n)=>{const d=new Date(s+"T00:00:00");d.setDate(d.getDate()+n);return iso(d)};
+const diffD=(a,b)=>Math.round((new Date(b+"T00:00:00")-new Date(a+"T00:00:00"))/864e5);
+const TODAY=()=>iso(new Date());
+let S={v:1,start:TODAY(),t:{},log:{},upd:0};
+let mode={hide:false,tab:'theory'};let QZ=null;
+try{const ls=localStorage.getItem("matan-progress");if(ls)S=Object.assign(S,JSON.parse(ls))}catch(e){}
+let dbRef=null,saving=false,pending=false,saveTimer=null,syncNote="";
+function persist(){S.upd=Date.now();try{localStorage.setItem("matan-progress",JSON.stringify(S))}catch(e){}
+ clearTimeout(saveTimer);saveTimer=setTimeout(flush,700)}
+async function flush(){if(!dbRef)return;if(saving){pending=true;return}saving=true;
+ try{await dbRef.set(JSON.parse(JSON.stringify(S)));syncNote="Прогресс сохранён в облаке"}catch(e){syncNote="Не удалось сохранить в облако, прогресс хранится в этом браузере"}
+ saving=false;if(pending){pending=false;flush()}}
+(async()=>{try{if(!window.claude||!claude.use)return;const db=await claude.use("db");const user=await claude.use("user");if(!db||!user)return;
+ const uid=await user.id();if(!uid)return;dbRef=db.doc("data/users/"+uid+"/progress");
+ const snap=await dbRef.get();if(snap.exists){const d=snap.data();if(d&&(d.upd||0)>(S.upd||0)){S=Object.assign({v:1,t:{},log:{}},JSON.parse(JSON.stringify(d)));try{localStorage.setItem("matan-progress",JSON.stringify(S))}catch(e){}render()}else if((S.upd||0)>(d.upd||0))flush()}else if(S.upd)flush();
+ syncNote="Прогресс синхронизируется между устройствами";render()}catch(e){}})();
+
+const st=id=>S.t[id]||{l:0};
+const lvl=id=>st(id).l||0;
+function dayIdx(){return Math.max(0,diffD(S.start,TODAY()))}
+function due(){const t=TODAY();return T.filter(x=>{const s=st(x.id);return s.l>0&&s.d&&s.d<=t})}
+function weak(){return T.filter(x=>{const l=lvl(x.id);return l>0&&l<=2})}
+function rate(id,r){const s=Object.assign({l:0,n:0},st(id));const gaps={1:1,2:2,3:4,4:7};
+ let l=r==0?1:r==1?2:r==2?Math.max(3,Math.min(4,s.l>=3?s.l+1:3)):4;
+ const g=r==2&&s.l>=3?Math.min(7,(s.g||2)*2):gaps[l];
+ S.t[id]={l,n:(s.n||0)+1,last:TODAY(),d:addD(TODAY(),g),g};
+ const k=TODAY();S.log[k]=(S.log[k]||0)+1;persist()}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function newQuiz(id,ctx){const qs=(Q[id]||[]).map((r,qi)=>{const opts=shuffle(r.slice(1,5).map((o,k)=>({o,c:k===0})));return{q:r[0],opts,ex:(E[id]&&E[id][qi])||r[5]||""}});return{id,qs,i:0,pick:null,ok:0,res:[],done:false,ctx}}
+function qPick(k){if(!QZ||QZ.pick!==null||QZ.done)return;QZ.pick=k;const c=QZ.qs[QZ.i].opts[k].c;QZ.res[QZ.i]=c;if(c)QZ.ok++;render()}
+function qNext(){if(!QZ||QZ.pick===null)return;QZ.i++;QZ.pick=null;if(QZ.i>=QZ.qs.length){QZ.done=true;const p=QZ.ok/QZ.qs.length;const r=p===1?3:p>=.75?2:p>=.5?1:0;QZ.r=r;rate(QZ.id,r);S.t[QZ.id].sc=[QZ.ok,QZ.qs.length];persist();if(QZ.ctx==="ses"&&SES)SES.res[r]++}render()}
+const VERD=["Нужно перечитать теорию","Почти, но есть пробелы","Хорошо, билет засчитан","Отлично, билет выучен"];
+function quizView(){const z=QZ,x=BYID[z.id];
+ const prog=`<div class="qprog">${z.qs.map((_,k)=>`<i class="${z.res[k]===true?"ok":z.res[k]===false?"bad":k===z.i&&!z.done?"cur":""}"></i>`).join("")}</div>`;
+ if(z.done){const wrong=z.qs.map((q,k)=>[q,k]).filter(([q,k])=>!z.res[k]);
+  const di=dayIdx(),d=PLAN[Math.min(di,29)];const nx=Array.isArray(d)?d.find(i=>lvl(i)===0):null;
+  return `${prog}<p class="note" style="margin:0">Результат теста</p><div class="score">${z.ok} / ${z.qs.length}</div>
+  <p class="row" style="margin:0 0 10px"><span class="dot" style="background:${LV[z.r+1].c}"></span><b>${VERD[z.r]}</b>&nbsp;<span class="note">· статус: ${LV[z.r+1].n}, повторить ${fmt(st(z.id).d)}</span></p>
+  ${wrong.length?`<h3>Ошибки — перечитай</h3>${wrong.map(([q])=>`<details open><summary>${q.q}</summary><div>Верно: <b style="color:var(--ink)">${q.opts.find(o=>o.c).o}</b></div>${q.ex?`<div class="expl">${q.ex}</div>`:""}</details>`).join("")}`:""}
+  <details><summary>Весь разбор билета (${z.qs.length} частей)</summary>${z.qs.map((q,k)=>`<div class="expl"><div class="h">Часть ${k+1}${z.res[k]?" · верно":" · ошибка"}</div>${q.ex}</div>`).join("")}</details>
+  <div class="row" style="flex-wrap:wrap;margin-top:14px">${z.ctx==="ses"?`<button class="btn pri" onclick="sesNext()">${SES&&SES.i+1<SES.q.length?"Следующий билет →":"Завершить"}</button>`:
+   `${nx&&nx!==z.id?`<a class="btn pri" href="#t-${nx.replace(".","-")}">Следующий билет на сегодня: ${nx} →</a>`:""}<button class="btn" onclick="QZ=newQuiz('${z.id}','t');render()">Пройти ещё раз</button><button class="btn" onclick="mode.tab='theory';QZ=null;render()">Читать теорию</button>`}</div>`}
+ const q=z.qs[z.i];const answered=z.pick!==null;
+ return `${prog}<p class="note" style="margin:0 0 6px">Часть ${z.i+1} из ${z.qs.length}</p><p class="qq">${q.q}</p>
+ ${q.opts.map((o,k)=>{let c="";if(answered){if(o.c)c="ok";else if(k===z.pick)c="bad"}return `<button class="opt ${c}" ${answered?"disabled":""} onclick="qPick(${k})"><span class="k">${k+1}</span><span>${o.o}</span></button>`}).join("")}
+ ${answered?`<p class="verdict ${z.res[z.i]?"ok":"bad"}">${z.res[z.i]?"Верно":"Неверно. Правильный ответ подсвечен зелёным"}</p>${q.ex?`<div class="expl"><div class="h">Разбор — повтори</div>${q.ex}</div>`:""}<button class="btn pri" onclick="qNext()">${z.i+1<z.qs.length?"Дальше →":"Результат"}</button> <span class="note">или Enter</span>`:`<p class="note">Выбери ответ мышкой или клавишами 1–4</p>`}`}
+function counts(){const c=[0,0,0,0,0];T.forEach(x=>c[lvl(x.id)]++);return c}
+function revList(d){if(d.rev==="weak"){const w=weak();return w.length?w:T.filter(x=>lvl(x.id)<3)}
+ if(d.rev==="exam")return [];const di=PLAN.indexOf(d);return T.filter(x=>d.rev.includes(x.s)&&DAYOF[x.id]<di)}
+function dayDone(i){const d=PLAN[i];const date=addD(S.start,i);
+ if(Array.isArray(d)){const r=d.filter(id=>lvl(id)>0).length;return r===d.length?2:r?1:0}
+ return S.log[date]?2:0}
+
+function header(){const c=counts();const k=c[3]+c[4];
+ document.getElementById("hcount").textContent=k+" из "+T.length;
+ document.getElementById("hbar").innerHTML=[4,3,2,1].map(l=>`<span style="width:${c[l]/T.length*100}%;background:${LV[l].c}"></span>`).join("");
+ const di=dayIdx();document.getElementById("hsub").textContent=di<30?`День ${di+1} из 30 · ${PLAN[di]&&!Array.isArray(PLAN[di])?PLAN[di].label:"новые билеты"}`:"План пройден — режим повторения"}
+function tItem(x,extra){return `<a class="ti" href="#t-${x.id.replace(".","-")}"><span class="dot" style="background:${LV[lvl(x.id)].c}"></span><span class="id">${x.id}</span><span class="nm">${x.t}</span>${extra||""}</a>`}
+
+function vToday(){const di=dayIdx();const d=PLAN[Math.min(di,29)];let h="";
+ if(di>=30){h+=`<div class="card"><h2>Месяц позади</h2><p class="note">План на 30 дней закончился. Дальше — повторение слабых билетов и пробные экзамены во вкладке «Тренировка».</p></div>`}
+ else if(Array.isArray(d)){const items=d.map(id=>BYID[id]);const done=items.filter(x=>lvl(x.id)>0).length;
+  h+=`<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">День ${di+1}: новые билеты</h2><span class="chip">${done} / ${items.length}</span></div>
+  <p class="note">Прочитай теорию билета, расскажи вслух и пройди тест: проверка автоматическая, оценка выставится сама.</p><div class="tl">${items.map(x=>tItem(x)).join("")}</div></div>`}
+ else{const list=revList(d);h+=`<div class="card"><h2>День ${di+1}: ${d.label}</h2>`;
+  if(d.rev==="exam")h+=`<p class="note">Сегодня проверка в условиях экзамена: случайный билет, 5 минут на подготовку, ответ вслух.</p><a class="btn pri" href="#train" onclick="setTimeout(()=>startSession('exam'),0)">Начать пробный экзамен</a>`;
+  else h+=`<p class="note">Пройди тесты по всем билетам из списка — оценки обновятся автоматически.</p><div class="row" style="margin-bottom:12px"><button class="btn pri" onclick="startSession('list',[${list.map(x=>`'${x.id}'`).join(",")}])">Пройти тесты подряд (${list.length})</button></div><div class="tl">${list.map(x=>tItem(x)).join("")}</div>`;
+  h+=`</div>`}
+ const back=T.filter(x=>lvl(x.id)===0&&DAYOF[x.id]<Math.min(di,30));
+ if(back.length)h+=`<div class="card"><h2>Долги с прошлых дней</h2><div class="tl">${back.map(x=>tItem(x)).join("")}</div></div>`;
+ const du=due();h+=`<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Повторить сегодня</h2><span class="chip">${du.length}</span></div>`;
+ h+=du.length?`<p class="note">Эти билеты пора повторить, чтобы они не забылись.</p><div class="row" style="margin-bottom:12px"><button class="btn pri" onclick="startSession('due')">Начать повторение</button></div><div class="tl">${du.map(x=>tItem(x)).join("")}</div>`:`<p class="note" style="margin:8px 0 0">На сегодня повторять нечего. Билеты появятся здесь через 1–7 дней после оценки.</p>`;
+ return h+`</div>`}
+
+function vTickets(){let h="";for(const s in SECTIONS){h+=`<div class="card"><h2>${s}. ${SECTIONS[s]}</h2><div class="tl">${T.filter(x=>x.s==s).map(x=>tItem(x,`<span class="chip" style="background:transparent;color:var(--mute)">${st(x.id).sc?"тест "+st(x.id).sc[0]+"/"+st(x.id).sc[1]:LV[lvl(x.id)].n}</span>`)).join("")}</div></div>`}return h}
+
+function ticketBody(x,hide){const cls=hide?"hidden-ans":"";return `
+ <h3>План ответа</h3><ol class="plan">${x.plan.map(p=>`<li>${p}</li>`).join("")}</ol>
+ <div class="${cls}" id="ans"><h3>Что говорить</h3><div class="theory">${x.say}</div>
+ ${x.proof?`<h3>Доказательство</h3><div class="theory proof">${x.proof}</div>`:""}
+ ${x.qa&&x.qa.length?`<h3>Дополнительные вопросы</h3>${x.qa.map(q=>`<details><summary>${q[0]}</summary><div>${q[1]}</div></details>`).join("")}`:""}</div>`}
+function vTicket(id){const x=BYID[id];if(!x)return vToday();const s=st(id);const prev=T[x.i-1],next=T[x.i+1];
+ return `<div class="card"><div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><span class="chip">Билет ${x.id} · ${SECTIONS[x.s]}</span>
+ <span class="row note"><span class="dot" style="background:${LV[s.l||0].c}"></span>${LV[s.l||0].n}${s.d?` · повторить ${fmt(s.d)}`:""}</span></div>
+ <h2 style="margin-top:12px;font-size:20px">${x.t}</h2>
+ <div class="tabs"><button class="${mode.tab==="theory"?"on":""}" onclick="mode.tab='theory';render()">Теория</button><button class="${mode.tab==="quiz"?"on":""}" onclick="openQuiz('${x.id}')">Тест${s.sc?` · ${s.sc[0]}/${s.sc[1]}`:""}</button></div>
+ ${mode.tab==="quiz"&&QZ&&QZ.id===x.id?quizView():`<label class="toggle" style="margin-top:10px"><input type="checkbox" ${mode.hide?"checked":""} onchange="mode.hide=this.checked;render()"> Скрыть ответ: расскажи вслух по плану, потом открой</label>
+ ${ticketBody(x,mode.hide)}<div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)" class="row"><button class="btn pri" onclick="openQuiz('${x.id}')">Пройти тест по билету (${(Q[x.id]||[]).length} вопр.)</button><span class="note">Оценка выставится автоматически</span></div>`}</div>
+ <div class="row" style="justify-content:space-between">${prev?`<a class="btn" href="#t-${prev.id.replace(".","-")}">← ${prev.id}</a>`:"<span></span>"}${next?`<a class="btn" href="#t-${next.id.replace(".","-")}">${next.id} →</a>`:""}</div>`}
+function openQuiz(id){mode.tab='quiz';if(!QZ||QZ.id!==id||QZ.ctx!=='t')QZ=newQuiz(id,'t');render();window.scrollTo(0,0)}
+const fmt=d=>{const [y,m,dd]=d.split("-");return dd+"."+m};
+
+let SES=null;
+function startSession(kind,ids){let q;
+ if(kind==="due")q=due().map(x=>x.id);else if(kind==="weak")q=weak().map(x=>x.id);
+ else if(kind==="list")q=ids.slice();else if(kind==="sec")q=T.filter(x=>x.s==ids).map(x=>x.id);
+ else if(kind==="exam"){const pool=T.filter(x=>lvl(x.id)>0);const src=pool.length?pool:T;q=[src[Math.floor(Math.random()*src.length)].id]}
+ else{q=[T[Math.floor(Math.random()*T.length)].id]}
+ if(kind!=="exam"&&kind!=="rand")q.sort(()=>Math.random()-.5);
+ if(!q.length)return;SES={kind,q,i:0,oral:kind==="exam",res:[0,0,0,0],t0:Date.now(),limit:kind==="exam"?300:0};QZ=SES.oral?null:newQuiz(q[0],"ses");
+ if(location.hash!=="#train")location.hash="train";else render()}
+let tick=null;
+function sesNext(){SES.i++;SES.t0=Date.now();QZ=SES.i<SES.q.length?newQuiz(SES.q[SES.i],"ses"):null;render();window.scrollTo(0,0)}
+function vTrain(){if(SES&&SES.i<SES.q.length){const x=BYID[SES.q[SES.i]];
+ return `<div class="card"><div class="row" style="justify-content:space-between"><span class="chip">${SES.kind==="exam"?"Пробный экзамен":"Билет "+(SES.i+1)+" из "+SES.q.length}</span>${SES.oral?`<span class="timer" id="tmr"></span>`:""}</div>
+ <p class="note" style="margin:10px 0 2px">Билет ${x.id}</p><h2 style="font-size:20px">${x.t}</h2>
+ ${SES.oral?`<p class="note">5 минут на подготовку: набросай план на бумаге и расскажи билет вслух целиком. Потом проверь себя тестом.</p><button class="btn pri" onclick="SES.oral=false;QZ=newQuiz('${x.id}','ses');render()">Я ответил — проверить тестом</button>`:quizView()}
+ </div><div class="row"><button class="btn" onclick="SES=null;QZ=null;render()">Прервать</button></div>`}
+ if(SES){const r=SES.res;const tot=r.reduce((a,b)=>a+b,0);const h=`<div class="card"><h2>Готово</h2><p>Пройдено билетов: <b>${tot}</b>. Не помню: ${r[0]}, с трудом: ${r[1]}, помню: ${r[2]}, отлично: ${r[3]}.</p><button class="btn pri" onclick="SES=null;QZ=null;render()">К тренировкам</button></div>`;return h}
+ const du=due().length,wk=weak().length;
+ return `<div class="card"><h2>Пробный экзамен</h2><p class="note">Случайный билет из уже изученных. 5 минут на подготовку, ответ вслух, затем тест с автопроверкой.</p><button class="btn pri" onclick="startSession('exam')">Вытянуть билет</button></div>
+ <div class="card"><h2>Повторение</h2><div class="row" style="flex-wrap:wrap">
+ <button class="btn" ${du?"":"disabled"} onclick="startSession('due')">По графику (${du})</button>
+ <button class="btn" ${wk?"":"disabled"} onclick="startSession('weak')">Слабые билеты (${wk})</button>
+ <button class="btn" onclick="startSession('rand')">Случайный билет</button></div></div>
+ <div class="card"><h2>По разделу</h2><div class="tl">${Object.keys(SECTIONS).map(s=>`<a class="ti" href="javascript:void 0" onclick="startSession('sec',${s})"><span class="id">${s}</span><span class="nm">${SECTIONS[s]}</span><span class="chip">${T.filter(x=>x.s==s).length} билетов</span></a>`).join("")}</div></div>`}
+
+function streak(){let n=0,d=TODAY();if(!S.log[d])d=addD(d,-1);while(S.log[d]){n++;d=addD(d,-1)}return n}
+function vProgress(){const c=counts();const di=dayIdx();
+ let h=`<div class="tiles"><div class="tile"><b>${c[3]+c[4]}</b><span>выучено из ${T.length}</span></div><div class="tile"><b>${c[1]+c[2]}</b><span>в работе</span></div><div class="tile"><b>${c[0]}</b><span>ещё не начаты</span></div><div class="tile"><b>${streak()}</b><span>дней подряд</span></div></div>`;
+ h+=`<div class="card"><h2>Все билеты</h2><div class="grid">${T.map(x=>`<a class="cell" title="${x.id} — ${LV[lvl(x.id)].n}" href="#t-${x.id.replace(".","-")}" style="background:${LV[lvl(x.id)].c};${lvl(x.id)?"":"color:var(--mute)"}">${x.id}</a>`).join("")}</div>
+ <div class="legend">${LV.map(l=>`<span><i style="background:${l.c}"></i>${l.n}</span>`).join("")}</div></div>`;
+ h+=`<div class="card"><h2>По разделам</h2>${Object.keys(SECTIONS).map(s=>{const xs=T.filter(x=>x.s==s);const k=xs.filter(x=>lvl(x.id)>=3).length;const w=xs.filter(x=>lvl(x.id)>0&&lvl(x.id)<3).length;
+  return `<div class="sec"><div class="row"><span>${s}. ${SECTIONS[s]}</span><span class="note">${k} / ${xs.length}</span></div><div class="bar"><span style="width:${k/xs.length*100}%;background:var(--s3)"></span><span style="width:${w/xs.length*100}%;background:var(--s2)"></span></div></div>`}).join("")}</div>`;
+ h+=`<div class="card"><h2>Календарь на 30 дней</h2><div class="cal">${PLAN.map((d,i)=>{const dd=dayDone(i);const date=addD(S.start,i);
+  return `<div class="cd ${dd==2?"done":dd==1?"part":""} ${i===di?"today":""}" title="${Array.isArray(d)?d.join(", "):d.label}"><b>${i+1}</b><span style="font-size:10.5px;opacity:.8">${fmt(date)}</span></div>`}).join("")}</div>
+  <div class="legend"><span><i style="background:var(--s3)"></i>день выполнен</span><span><i style="background:var(--s2)"></i>частично</span><span><i style="border:2px solid var(--acc)"></i>сегодня</span></div></div>`;
+ h+=`<div class="card"><h2>Настройки</h2><div class="row" style="flex-wrap:wrap"><span>Первый день плана:</span><input type="date" value="${S.start}" onchange="if(this.value){S.start=this.value;persist();render()}"></div>
+ <p class="note">${syncNote||"Прогресс хранится в этом браузере."}</p>
+ <div id="rst"><button class="btn" onclick="document.getElementById('rst').innerHTML='<span>Стереть весь прогресс?</span> <button class=&quot;btn&quot; onclick=&quot;resetAll()&quot;>Да, стереть</button> <button class=&quot;btn&quot; onclick=&quot;render()&quot;>Отмена</button>'">Сбросить прогресс</button></div></div>`;
+ return h}
+function resetAll(){S={v:1,start:TODAY(),t:{},log:{},upd:0};persist();render()}
+
+function rateBar_unused(id){const el=document.getElementById("rate");if(!id){el.style.display="none";return}
+ el.style.display="block";const opts=[["Не помню",1],["С трудом",2],["Помню",3],["Отлично",4]];
+ el.innerHTML=`<div class="in"><span class="lbl">Как ответил${SES&&SES.i<SES.q.length?"":"?"}</span>${opts.map((o,r)=>`<button class="rb" style="border-color:${LV[o[1]].c}" onclick="doRate('${id}',${r})"><span class="dot" style="display:inline-block;background:${LV[o[1]].c};margin-right:6px;vertical-align:-1px"></span>${o[0]}<span class="note"> · ${r+1}</span></button>`).join("")}</div>`}
+function doRate(id,r){rate(id,r);if(SES&&SES.i<SES.q.length&&SES.q[SES.i]===id){SES.res[r]++;SES.i++;SES.shown=false;SES.t0=Date.now()}
+ else{const x=BYID[id];const di=dayIdx();const d=PLAN[Math.min(di,29)];let nx=null;
+  if(Array.isArray(d)){const rest=d.filter(i=>lvl(i)===0);if(rest.length)nx=rest[0]}
+  mode.hide=false;if(nx){location.hash="t-"+nx.replace(".","-");return}}
+ render();window.scrollTo(0,0)}
+document.addEventListener("keydown",e=>{if(e.target.tagName==="INPUT"||!QZ||QZ.done)return;const h=location.hash.slice(1);if(!(h==="train"||(h.startsWith("t-")&&mode.tab==="quiz")))return;
+ if(/^[1-4]$/.test(e.key)&&QZ.pick===null)qPick(+e.key-1);else if(e.key==="Enter"&&QZ.pick!==null){e.preventDefault();qNext()}});
+function curRateId(){const h=location.hash.slice(1);if(h.startsWith("t-"))return h.slice(2).replace("-",".");
+ if(h==="train"&&SES&&SES.i<SES.q.length&&SES.shown)return SES.q[SES.i];return null}
+
+function render(){header();const h=location.hash.slice(1)||"today";
+ document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+(h.startsWith("t-")?"tickets":h)));
+ const app=document.getElementById("app");
+ app.innerHTML=h==="tickets"?vTickets():h==="train"?vTrain():h==="progress"?vProgress():h.startsWith("t-")?vTicket(h.slice(2).replace("-",".")):vToday();
+ clearInterval(tick);
+ if(h==="train"&&SES&&SES.i<SES.q.length&&SES.oral){const f=()=>{const el=document.getElementById("tmr");if(!el)return;let s=Math.floor((Date.now()-SES.t0)/1000);
+  if(SES.limit){s=SES.limit-s;el.style.color=s<0?"var(--s1)":"";s=Math.abs(s)}el.textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};f();tick=setInterval(f,1000)}}
+let lastHash=location.hash;
+window.addEventListener("hashchange",()=>{mode.hide=false;mode.tab='theory';if(QZ&&QZ.ctx==="t")QZ=null;render();window.scrollTo(0,0)});
+render();
+</script>
+</body>
+</html>
