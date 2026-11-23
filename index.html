@@ -1206,8 +1206,25 @@ function vProgress(){const c=counts();const di=dayIdx();
  h+=`<div class="card"><h2>Весь план по дням</h2>${PLAN.map((d,i)=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line);font-size:14px;${i===di?"font-weight:600":""}"><span style="min-width:96px;color:var(--mute)">${dlabel(i)}</span><span style="flex:1">${Array.isArray(d)?"Новые билеты: "+d.join(", "):d.label+(d.ids?" ("+d.ids[0]+"–"+d.ids[d.ids.length-1]+")":"")}</span>${d.h?`<span class="note">${d.h}</span>`:Array.isArray(d)?`<span class="note">~1 ч</span>`:""}</div>`).join("")}</div>`;
  h+=`<div class="card"><h2>Настройки</h2><div class="row" style="flex-wrap:wrap"><span>Первый день плана:</span><input type="date" value="${S.start}" onchange="if(this.value){S.start=this.value;persist();render()}"><span class="note">по умолчанию 24 ноября, экзамен 13 января</span></div>
  <p class="note">${syncNote||"Прогресс хранится в этом браузере."}</p>
+ <h3>Перенос прогресса</h3><p class="note" style="margin-top:0">Между версией на claude.ai и сайтом на GitHub (или между браузерами): скопируй код здесь и вставь на другом сайте.</p>
+ <div class="row" style="flex-wrap:wrap;margin-bottom:10px"><button class="btn" onclick="showExport()">Скопировать код прогресса</button><button class="btn" onclick="showImport()">Вставить код</button></div><div id="xfer"></div>
  <div id="rst"><button class="btn" onclick="document.getElementById('rst').innerHTML='<span>Стереть весь прогресс?</span> <button class=&quot;btn&quot; onclick=&quot;resetAll()&quot;>Да, стереть</button> <button class=&quot;btn&quot; onclick=&quot;render()&quot;>Отмена</button>'">Сбросить прогресс</button></div></div>`;
  return h}
+function exportCode(){return "MATAN1:"+btoa(unescape(encodeURIComponent(JSON.stringify({start:S.start,planV:S.planV,t:S.t,log:S.log}))))}
+function showExport(){const box=document.getElementById("xfer");const c=exportCode();
+ box.innerHTML=`<p class="note">Скопируй этот код и вставь его на другом сайте в «Перенос прогресса → Вставить код».</p><textarea id="xcode" readonly style="width:100%;height:90px;font:12px monospace;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:8px">${c}</textarea><div class="row" style="margin-top:8px"><button class="btn pri" onclick="copyCode()">Скопировать</button><span class="note" id="xmsg"></span></div>`}
+async function copyCode(){const t=document.getElementById("xcode");const m=document.getElementById("xmsg");try{await navigator.clipboard.writeText(t.value);m.textContent="Скопировано"}catch(e){t.select();m.textContent="Выдели код и скопируй вручную (⌘C / Ctrl+C)"}}
+function showImport(){const box=document.getElementById("xfer");
+ box.innerHTML=`<p class="note">Вставь код, скопированный на другом сайте. Прогресс объединится: по каждому билету останется более свежая оценка.</p><textarea id="icode" style="width:100%;height:90px;font:12px monospace;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px" placeholder="MATAN1:..."></textarea><div class="row" style="margin-top:8px"><button class="btn pri" onclick="doImport()">Загрузить прогресс</button><span class="note" id="imsg"></span></div>`}
+function doImport(){const m=document.getElementById("imsg");let raw=(document.getElementById("icode").value||"").trim();
+ if(!raw.startsWith("MATAN1:")){m.style.color="var(--s1)";m.textContent="Это не похоже на код прогресса: он начинается с MATAN1:";return}
+ let d;try{d=JSON.parse(decodeURIComponent(escape(atob(raw.slice(7)))))}catch(e){m.style.color="var(--s1)";m.textContent="Код повреждён — скопируй его заново целиком";return}
+ if(!d||typeof d.t!=="object"){m.style.color="var(--s1)";m.textContent="В коде нет данных о билетах";return}
+ let n=0;for(const id in d.t){if(!BYID[id])continue;const a=S.t[id],b=d.t[id];if(!b||typeof b.l!=="number")continue;
+  if(!a||(b.last||"")>(a.last||"")||((b.last||"")===(a.last||"")&&(b.n||0)>(a.n||0))){S.t[id]=b;n++}}
+ for(const k in (d.log||{}))S.log[k]=Math.max(S.log[k]||0,+d.log[k]||0);
+ if(d.start&&/^\d{4}-\d{2}-\d{2}$/.test(d.start))S.start=d.start;S.planV=2;persist();render();
+ const el=document.getElementById("xfer");if(el)el.innerHTML=`<p style="color:var(--s4);margin:0">Готово: обновлено билетов — ${n}. Прогресс перенесён.</p>`}
 function resetAll(){S={v:1,start:PLAN_START,planV:2,t:{},log:{},upd:0};persist();render()}
 
 function rateBar_unused(id){const el=document.getElementById("rate");if(!id){el.style.display="none";return}
